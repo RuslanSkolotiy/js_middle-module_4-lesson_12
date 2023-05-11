@@ -1,20 +1,21 @@
-import React, {FC, useEffect, useState} from 'react';
-import {CommonPageProps} from './types';
-import {Col, Row} from 'react-bootstrap';
-import {useParams} from 'react-router-dom';
-import {ContactDto} from 'src/types/dto/ContactDto';
-import {ContactCard} from 'src/components/ContactCard';
-import {Empty} from 'src/components/Empty';
+import React, { FC, useEffect, useState } from 'react';
+import { CommonPageProps } from './types';
+import { Col, Row } from 'react-bootstrap';
+import { useParams } from 'react-router-dom';
+import { ContactDto } from 'src/types/dto/ContactDto';
+import { ContactCard } from 'src/components/ContactCard';
+import { Empty } from 'src/components/Empty';
+import { useSelector } from 'react-redux';
+import { selectContacts } from 'src/ducks/contacts';
 
 
-export const ContactPage: FC<CommonPageProps> = ({
-  contactsState
-}) => {
-  const {contactId} = useParams<{ contactId: string }>();
+export const ContactPage: FC = () => {
+  const contacts = useSelector(selectContacts);
+  const { contactId } = useParams<{ contactId: string }>();
   const [contact, setContact] = useState<ContactDto>();
 
   useEffect(() => {
-    setContact(() => contactsState[0].find(({id}) => id === contactId));
+    setContact(() => contacts.find(({ id }) => id === contactId));
   }, [contactId]);
 
   return (
