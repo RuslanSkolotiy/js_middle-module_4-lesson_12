@@ -1,17 +1,17 @@
-import { Col, Row } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
-import { GroupContactsCard } from 'src/components/GroupContactsCard';
-import { selectGroups } from 'src/ducks/contactGroups';
+import { observer } from "mobx-react-lite";
+import { Col, Row } from "react-bootstrap";
+import { GroupContactsCard } from "src/components/GroupContactsCard";
+import { contactGroupsStore } from "src/store/contactGroupsStore";
 
-export const GroupListPage = () => {
-  const groups = useSelector(selectGroups);
-  return (
-    <Row xxl={4}>
-      {groups.map((groupContacts) => (
-        <Col key={groupContacts.id}>
-          <GroupContactsCard groupContacts={groupContacts} withLink />
-        </Col>
-      ))}
-    </Row>
-  );
-};
+export const GroupListPage = observer(() => {
+    const groups = contactGroupsStore.items;
+    return (
+        <Row xxl={4}>
+            {groups.map((groupContacts) => (
+                <Col key={groupContacts.id}>
+                    <GroupContactsCard groupContacts={groupContacts} withLink />
+                </Col>
+            ))}
+        </Row>
+    );
+});

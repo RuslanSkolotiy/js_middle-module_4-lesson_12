@@ -1,56 +1,61 @@
-import React, { memo, useEffect, useState } from 'react';
-import { CommonPageProps } from './types';
-import { Col, Row } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
-import { ContactDto } from 'src/types/dto/ContactDto';
-import { GroupContactsDto } from 'src/types/dto/GroupContactsDto';
-import { GroupContactsCard } from 'src/components/GroupContactsCard';
-import { Empty } from 'src/components/Empty';
-import { ContactCard } from 'src/components/ContactCard';
-import { useSelector } from 'react-redux';
-import { selectGroups } from 'src/ducks/contactGroups';
-import { selectContacts } from 'src/ducks/contacts';
+import React, { memo, useEffect, useState } from "react";
+import { Col, Row } from "react-bootstrap";
+import { useParams } from "react-router-dom";
+import { ContactDto } from "src/types/dto/ContactDto";
+import { GroupContactsDto } from "src/types/dto/GroupContactsDto";
+import { GroupContactsCard } from "src/components/GroupContactsCard";
+import { Empty } from "src/components/Empty";
+import { ContactCard } from "src/components/ContactCard";
+import { contactGroupsStore } from "src/store/contactGroupsStore";
+import { contactsStore } from "src/store/contactsStore";
+import { observer } from "mobx-react-lite";
 
-export const GroupPage = () => {
-  const groups = useSelector(selectGroups);
-  const allContacts = useSelector(selectContacts);
-  const { groupId } = useParams<{ groupId: string }>();
-  const [contacts, setContacts] = useState<ContactDto[]>([]);
-  const [groupContacts, setGroupContacts] = useState<GroupContactsDto>();
+export const GroupPage = observer(() => {
+    const groups = contactGroupsStore.items;
+    const allContacts = contactsStore.items;
+    const { groupId } = useParams<{ groupId: string }>();
+    const [contacts, setContacts] = useState<ContactDto[]>([]);
+    const [groupContacts, setGroupContacts] = useState<GroupContactsDto>();
 
-  useEffect(() => {
-    const findGroup = groups.find(({ id }) => id === groupId);
-    setGroupContacts(findGroup);
-    setContacts(() => {
-      if (findGroup) {
-        return allContacts.filter(({ id }) => findGroup.contactIds.includes(id))
-      }
-      return [];
-    });
-  }, [groupId]);
+    useEffect(() => {
+        const findGroup = groups.find(({ id }) => id === groupId);
+        setGroupContacts(findGroup);
+        setContacts(() => {
+            if (findGroup) {
+                return allContacts.filter(({ id }) =>
+                    findGroup.contactIds.includes(id)
+                );
+            }
+            return [];
+        });
+    }, [groupId]);
 
-  return (
-    <Row className="g-4">
-      {groupContacts ? (
-        <>
-          <Col xxl={12}>
-            <Row xxl={3}>
-              <Col className="mx-auto">
-                <GroupContactsCard groupContacts={groupContacts} />
-              </Col>
-            </Row>
-          </Col>
-          <Col>
-            <Row xxl={4} className="g-4">
-              {contacts.map((contact) => (
-                <Col key={contact.id}>
-                  <ContactCard contact={contact} withLink />
-                </Col>
-              ))}
-            </Row>
-          </Col>
-        </>
-      ) : <Empty />}
-    </Row>
-  );
-};
+    return (
+        <Row className="g-4">
+            {groupContacts ? (
+                <>
+                    <Col xxl={12}>
+                        <Row xxl={3}>
+                            <Col className="mx-auto">
+                                <GroupContactsCard
+                                    groupContacts={groupContacts}
+                                />
+                            </Col>
+                        </Row>
+                    </Col>
+                    <Col>
+                        <Row xxl={4} className="g-4">
+                            {contacts.map((contact) => (
+                                <Col key={contact.id}>
+                                    <ContactCard contact={contact} withLink />
+                                </Col>
+                            ))}
+                        </Row>
+                    </Col>
+                </>
+            ) : (
+                <Empty />
+            )}
+        </Row>
+    );
+});

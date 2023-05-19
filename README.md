@@ -1,1 +1,1 @@
-﻿## Профессия Middle Frontend-разработчик / Модуль 4. State Managers / Задание 2 недели
+﻿## Профессия Middle Frontend-разработчик / Модуль 4. State Managers / Урок 12. Итоговый
